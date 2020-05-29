@@ -47,7 +47,7 @@ def get_stats(video):
 
 
 # url = input("Enter url: ")
-url = "https://www.youtube.com/watch?v=A_BlNA7bBxo"
+url = "https://www.youtube.com/watch?v=NtlksTJK4ys"
 vidstats = get_stats(url)
 initial = datetime.now()
 print(vidstats["title"])
@@ -62,21 +62,23 @@ os.chdir(os.getcwd() + "\\" + vidstats["title"])
 
 workbook = xlsxwriter.Workbook('vidstats.xlsx')
 worksheet = workbook.add_worksheet()
-worksheet.write(0, 0, "VIEWS")
-worksheet.write(0, 1, "TRENDING")
-worksheet.write(0, 2, "DATE (DD/MM/YY HH:MM:SS")
+worksheet.write(0, 0, "INTERVAL")
+worksheet.write(0, 1, "VIEWS")
+worksheet.write(0, 2, "TRENDING")
 print("Worksheet created at: " + os.getcwd())
 
 length = 10
 pinged = 0
+interval = length
 row = pinged + 1
 col = 0
 
-while not vidstats["trending"] and pinged != 100000:
+while not vidstats["trending"] and pinged != 8640:
     vidstats = get_stats(url)
-    worksheet.write(row, col, vidstats["views"])
-    worksheet.write(row, col + 1, vidstats["trending"])
-    worksheet.write(row, col + 2, vidstats["time"].strftime("%d/%m/%Y %H:%M:%S"))
+    worksheet.write(row, col, interval)
+    worksheet.write(row, col + 1, vidstats["views"])
+    interval += length
+    worksheet.write(row, col + 2, vidstats["trending"])
     pinged += 1
     row = pinged + 1
     print("Ping #" + str(pinged))
@@ -85,9 +87,9 @@ while not vidstats["trending"] and pinged != 100000:
     time.sleep(length)
 
 if vidstats['trending'] is True:
-    worksheet.write(row, col, vidstats["views"])
-    worksheet.write(row, col + 1, vidstats["trending"])
-    worksheet.write(row, col + 2, vidstats["time"].strftime("%d/%m/%Y %H:%M:%S"))
+    worksheet.write(row, col, interval)
+    worksheet.write(row, col + 1, vidstats["views"])
+    worksheet.write(row, col + 2, vidstats["trending"])
     worksheet.write(row + 1, col + 2, "TIME DELTA")
     worksheet.write(row + 2, col + 2, vidstats["time"] - initial)
     print("Video went trending after " + str(vidstats["time"] - initial))
